@@ -19,10 +19,11 @@ class BLE: NSObject {
     var activeDevice:CBPeripheral?
     var activeCharacteristic:CBCharacteristic?
     
-    //Alert properties
-    public var UIAlert:UIAlertController?
+    //UIAlert properties
+    public var deviceAlert:UIAlertController?
     public var deviceSheet:UIAlertController?
     
+    //Device UUID properties
     struct myDevice {
         static let ServiceUUID:CBUUID = CBUUID(string: "* Insert Service UUID here *")
         static let CharactersticUUID:CBUUID = CBUUID(string: "* Insert Characteristic UUID here *")
@@ -80,8 +81,8 @@ extension BLE: CBCentralManagerDelegate {
     }
     
     func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
-        UIAlert = UIAlertController(title: "Error: failed to connect.",
-                                    message: "Please try again.", preferredStyle: .alert)
+        deviceAlert = UIAlertController(title: "Error: failed to connect.",
+                                        message: "Please try again.", preferredStyle: .alert)
     }
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
@@ -93,7 +94,7 @@ extension BLE: CBCentralManagerDelegate {
 
 extension BLE: CBPeripheralDelegate {
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
-        UIAlert = UIAlertController(title: "Error:", message: "Please try again.", preferredStyle: .alert)
+        deviceAlert = UIAlertController(title: "Error:", message: "Please try again.", preferredStyle: .alert)
         if error != nil {
             // post notification
             return
@@ -111,7 +112,7 @@ extension BLE: CBPeripheralDelegate {
     }
     
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
-        UIAlert = UIAlertController(title: "Error:", message: "Please try again.", preferredStyle: .alert)
+        deviceAlert = UIAlertController(title: "Error:", message: "Please try again.", preferredStyle: .alert)
         if error != nil {
             // post notification
             return
@@ -132,21 +133,18 @@ extension BLE: CBPeripheralDelegate {
     }
     
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
-        UIAlert = UIAlertController(title: "Error:", message: "Please try again.", preferredStyle: .alert)
+        deviceAlert = UIAlertController(title: "Error:", message: "Please try again.", preferredStyle: .alert)
         if error != nil {
             // post notification
             return
         }
         
-        guard let data = characteristic.value else {
-            //post notification
-            return
-        }
+        guard let dataFromDevice = characteristic.value else { return }
         
         if characteristic.uuid == myDevice.CharactersticUUID {
             // do something...
             //post notification
-            print(data)
+            print(dataFromDevice)
         }
         
         // else if characteristic.uuid == myDevice.SecondCharacteristicUUID
@@ -158,6 +156,9 @@ extension BLE: CBPeripheralDelegate {
 
 extension BLE {
     func disconnect() {
+        if let activeCharacteristic = activeCharacteristic {
+            activeDevice?.setNotifyValue(false, for: activeCharacteristic)
+        }
         if let activeDevice = activeDevice {
             centralManager.cancelPeripheralConnection(activeDevice)
         }
