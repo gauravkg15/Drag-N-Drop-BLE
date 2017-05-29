@@ -20,8 +20,8 @@ class BLE: NSObject {
     var activeCharacteristic:CBCharacteristic?
     
     //Alert properties
-    var UIAlert:UIAlertController?
-    var deviceSheet:UIAlertController?
+    public var UIAlert:UIAlertController?
+    public var deviceSheet:UIAlertController?
     
     struct myDevice {
         static let ServiceUUID:CBUUID = CBUUID(string: "* Insert Service UUID here *")
@@ -53,10 +53,12 @@ extension BLE: CBCentralManagerDelegate {
     }
     
     public func startScanning() {
+        activeDevice = nil
         centralManager.scanForPeripherals(withServices: [myDevice.ServiceUUID], options: nil)
         deviceSheet = UIAlertController(title: "Please choose a device.",
                                         message: "Connect to:", preferredStyle: .actionSheet)
-        deviceSheet!.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { action -> Void in}))
+        deviceSheet!.addAction(UIAlertAction(title: "Cancel",
+                                             style: .cancel, handler: { action -> Void in self.centralManager.stopScan() }))
     }
     
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral,
@@ -83,7 +85,7 @@ extension BLE: CBCentralManagerDelegate {
     }
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
-        self.reset()
+        if peripheral == activeDevice {  self.reset() }
     }
 }
 
