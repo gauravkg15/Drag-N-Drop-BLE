@@ -9,17 +9,36 @@
 import UIKit
 
 class ViewController: UIViewController {
+    
+    // MARK: - Private properties
+    var isBLEConnected = false
+    
+    // MARK: - IBOutlets
+    
+    @IBOutlet weak var bluetoothButton: UIButton!
+    
+    // MARK: - UIViewController methods
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        bluetoothButton.setImage(UIImage(named: "bluetoothRed"), for: UIControlState())
+        BLE.sharedInstance.startCentralManager()
     }
+}
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+// MARK: - IBActions
+
+extension ViewController {
+    
+    @IBAction func bluetoothButtonTapped(_ sender: UIButton) {
+        if isBLEConnected {
+            BLE.sharedInstance.disconnect()
+        }
+        else {
+            BLE.sharedInstance.startScanning()
+        }
+        
     }
-
-
+    
 }
 

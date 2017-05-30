@@ -12,6 +12,9 @@ import CoreBluetooth
 
 class BLE: NSObject {
     
+    // MARK: - BLE shared instance 
+    static let sharedInstance = BLE()
+    
     // MARK: - Properties
     
     //CoreBluetooth properties
@@ -31,11 +34,7 @@ class BLE: NSObject {
     
     // MARK: - Init method
     
-    override init() {
-        super.init()
-        let centralManagerQueue = DispatchQueue(label: "BLE queue", attributes: .concurrent)
-        centralManager = CBCentralManager(delegate: self, queue: centralManagerQueue)
-    }
+    private override init() { }
 }
 
 // MARK: - CBCentralManagerDelegte protocal conformance
@@ -55,7 +54,7 @@ extension BLE: CBCentralManagerDelegate {
     
     public func startScanning() {
         activeDevice = nil
-        centralManager.scanForPeripherals(withServices: [myDevice.ServiceUUID], options: nil)
+        centralManager.scanForPeripherals(withServices: nil, options: nil)
         deviceSheet = UIAlertController(title: "Please choose a device.",
                                         message: "Connect to:", preferredStyle: .actionSheet)
         deviceSheet!.addAction(UIAlertAction(title: "Cancel",
@@ -68,7 +67,7 @@ extension BLE: CBCentralManagerDelegate {
         let availableDevice = UIAlertAction(title: peripheral.name, style: .default, handler: {
             action -> Void in
             self.centralManager.connect(peripheral,
-                                        options: [CBConnectPeripheralOptionNotifyOnDisconnectionKey : true])
+                options: [CBConnectPeripheralOptionNotifyOnDisconnectionKey : true])
         })
         deviceSheet!.addAction(availableDevice)
     }
@@ -86,7 +85,7 @@ extension BLE: CBCentralManagerDelegate {
     }
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
-        if peripheral == activeDevice {  self.reset() }
+        if peripheral == activeDevice {  self.clearDevices() }
     }
 }
 
@@ -112,7 +111,8 @@ extension BLE: CBPeripheralDelegate {
     }
     
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
-        deviceAlert = UIAlertController(title: "Error:", message: "Please try again.", preferredStyle: .alert)
+        deviceAlert = UIAlertController(title: "Error:", message: "Please try again.",
+                                        preferredStyle: .alert)
         if error != nil {
             // post notification
             return
@@ -155,6 +155,16 @@ extension BLE: CBPeripheralDelegate {
 // MARK: - Helper methods
 
 extension BLE {
+    func startCentralManager() {
+        let centralManagerQueue = DispatchQueue(label: "BLE queue", attributes: .concurrent)
+        centralManager = CBCentralManager(delegate: self, queue: centralManagerQueue)
+    }
+    
+    func resetCentralManger() {
+        let centralManagerQueue = DispatchQueue(label: "BLE queue", attributes: .concurrent)
+        centralManager = CBCentralManager(delegate: self, queue: centralManagerQueue)
+    }
+    
     func disconnect() {
         if let activeCharacteristic = activeCharacteristic {
             activeDevice?.setNotifyValue(false, for: activeCharacteristic)
@@ -164,7 +174,7 @@ extension BLE {
         }
     }
     
-    func reset() {
+    func clearDevices() {
         activeDevice = nil
     }
     
