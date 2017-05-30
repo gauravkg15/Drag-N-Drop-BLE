@@ -28,8 +28,8 @@ class BLE: NSObject {
     
     //Device UUID properties
     struct myDevice {
-        static let ServiceUUID:CBUUID = CBUUID(string: "* Insert Service UUID here *")
-        static let CharactersticUUID:CBUUID = CBUUID(string: "* Insert Characteristic UUID here *")
+        static var ServiceUUID:CBUUID?
+        static var CharactersticUUID:CBUUID?
     }
     
     // MARK: - Init method
@@ -52,19 +52,19 @@ extension BLE: CBCentralManagerDelegate {
         }
     }
     
-    public func startScanning() {
-        activeDevice = nil
-        centralManager.scanForPeripherals(withServices: nil, options: nil)
-        deviceSheet = UIAlertController(title: "Please choose a device.",
-                                        message: "Connect to:", preferredStyle: .actionSheet)
-        deviceSheet!.addAction(UIAlertAction(title: "Cancel",
-                                             style: .cancel, handler: { action -> Void in self.centralManager.stopScan() }))
+    public func startScanningForDevicesWith(serviceUUID: String, characteristicUUID: String) {
+        self.disconnect()
+        myDevice.ServiceUUID = CBUUID(string: serviceUUID)
+        myDevice.CharactersticUUID = CBUUID(string: characteristicUUID)
+        self.createDeviceSheet()
+        centralManager.scanForPeripherals(withServices: [myDevice.ServiceUUID!], options: nil)
     }
     
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral,
-                        advertisementData: [String : Any], rssi RSSI: NSNumber) {
-        
-        let availableDevice = UIAlertAction(title: peripheral.name, style: .default, handler: {
+        advertisementData: [String : Any], rssi RSSI: NSNumber) {
+        var title = "Unknown Device"
+        if (peripheral.name != nil) { title = peripheral.name!}
+        let availableDevice = UIAlertAction(title: title , style: .default, handler: {
             action -> Void in
             self.centralManager.connect(peripheral,
                 options: [CBConnectPeripheralOptionNotifyOnDisconnectionKey : true])
@@ -74,18 +74,21 @@ extension BLE: CBCentralManagerDelegate {
     
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         centralManager.stopScan()
+         NotificationCenter.default.post(name: BLE_NOTIFICATION, object: self, userInfo: ["currentConnection" : "CONNECTING"])
         activeDevice = peripheral
         activeDevice?.delegate = self
-        activeDevice?.discoverServices([myDevice.ServiceUUID])
+        activeDevice?.discoverServices([myDevice.ServiceUUID!])
     }
     
     func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
-        deviceAlert = UIAlertController(title: "Error: failed to connect.",
-                                        message: "Please try again.", preferredStyle: .alert)
+        self.createErrorAlert()
     }
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
-        if peripheral == activeDevice {  self.clearDevices() }
+        if peripheral == activeDevice {
+             NotificationCenter.default.post(name: BLE_NOTIFICATION, object: self, userInfo: ["currentConnection" : "DISCONNECTED"])
+            self.clearDevices()
+        }
     }
 }
 
@@ -93,16 +96,11 @@ extension BLE: CBCentralManagerDelegate {
 
 extension BLE: CBPeripheralDelegate {
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
-        deviceAlert = UIAlertController(title: "Error:", message: "Please try again.", preferredStyle: .alert)
         if error != nil {
-            // post notification
+            self.createErrorAlert()
             return
         }
-        
-        guard let services = peripheral.services else {
-            // post notification
-            return
-        }
+        guard let services = peripheral.services else { return}
         for thisService in services {
             if thisService.uuid == myDevice.ServiceUUID {
                 activeDevice?.discoverCharacteristics(nil, for: thisService)
@@ -111,18 +109,14 @@ extension BLE: CBPeripheralDelegate {
     }
     
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
-        deviceAlert = UIAlertController(title: "Error:", message: "Please try again.",
-                                        preferredStyle: .alert)
         if error != nil {
+            self.createErrorAlert()
             // post notification
             return
         }
-        
-        guard let characteristics = service.characteristics else {
-            // post notification
-            return
-        }
-        
+        guard let characteristics = service.characteristics else { return }
+        NotificationCenter.default.post(name: BLE_NOTIFICATION, object: nil)
+        NotificationCenter.default.post(name: BLE_NOTIFICATION, object: self, userInfo: ["currentConnection" : "CONNECTED"])
         for thisCharacteristic in characteristics {
             if (thisCharacteristic.uuid == myDevice.CharactersticUUID) {
                 activeCharacteristic = thisCharacteristic
@@ -133,7 +127,7 @@ extension BLE: CBPeripheralDelegate {
     }
     
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
-        deviceAlert = UIAlertController(title: "Error:", message: "Please try again.", preferredStyle: .alert)
+        self.createErrorAlert()
         if error != nil {
             // post notification
             return
@@ -156,11 +150,12 @@ extension BLE: CBPeripheralDelegate {
 
 extension BLE {
     func startCentralManager() {
-        let centralManagerQueue = DispatchQueue(label: "BLE queue", attributes: .concurrent)
-        centralManager = CBCentralManager(delegate: self, queue: centralManagerQueue)
+        //let centralManagerQueue = DispatchQueue(label: "BLE queue", attributes: .concurrent)
+        centralManager = CBCentralManager(delegate: self, queue: nil)
     }
     
     func resetCentralManger() {
+        self.disconnect()
         let centralManagerQueue = DispatchQueue(label: "BLE queue", attributes: .concurrent)
         centralManager = CBCentralManager(delegate: self, queue: centralManagerQueue)
     }
@@ -174,8 +169,22 @@ extension BLE {
         }
     }
     
-    func clearDevices() {
+    fileprivate func clearDevices() {
         activeDevice = nil
+        activeCharacteristic = nil
+        myDevice.ServiceUUID = nil
+        myDevice.CharactersticUUID = nil
     }
     
+    fileprivate func createDeviceSheet() {
+        deviceSheet = UIAlertController(title: "Please choose a device.",
+            message: "Connect to:", preferredStyle: .actionSheet)
+        deviceSheet!.addAction(UIAlertAction(title: "Cancel", style: .cancel,
+            handler: { action -> Void in self.centralManager.stopScan() }))
+    }
+    
+    fileprivate func createErrorAlert() {
+        deviceAlert = UIAlertController(title: "Error: failed to connect.",
+            message: "Please try again.", preferredStyle: .alert)
+    }
 }
