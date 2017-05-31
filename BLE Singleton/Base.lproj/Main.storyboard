@@ -32,12 +32,26 @@
                                     <action selector="bluetoothButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="e9K-MT-yvY"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gFC-4M-S4R">
+                                <rect key="frame" x="84" y="63" width="206" height="80"/>
+                                <attributedString key="attributedText">
+                                    <fragment content="Label">
+                                        <attributes>
+                                            <font key="NSFont" size="24" name="Menlo-Regular"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                </attributedString>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="ifE-s1-KBl" firstAttribute="bottom" secondItem="wfy-db-euE" secondAttribute="top" id="5Mk-vr-AAl"/>
+                            <constraint firstItem="gFC-4M-S4R" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="GeS-lw-rWE"/>
                             <constraint firstItem="ifE-s1-KBl" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="LJW-43-TzF"/>
                             <constraint firstItem="ifE-s1-KBl" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="M39-dL-bq9"/>
+                            <constraint firstItem="gFC-4M-S4R" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" constant="-230.5" id="QZe-3S-7Mm"/>
                             <constraint firstItem="ifE-s1-KBl" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="Wyj-YQ-BmK"/>
                             <constraint firstItem="ifE-s1-KBl" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="dBO-qC-BrG"/>
                             <constraint firstItem="ifE-s1-KBl" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="h74-1p-2sc"/>
@@ -47,11 +61,12 @@
                     </view>
                     <connections>
                         <outlet property="bluetoothButton" destination="ifE-s1-KBl" id="jcd-Nx-e9L"/>
+                        <outlet property="myLabel" destination="gFC-4M-S4R" id="y3Q-VY-qM4"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="32.799999999999997" y="38.23088455772114"/>
+            <point key="canvasLocation" x="-188" y="-12.143928035982009"/>
         </scene>
     </scenes>
     <resources>

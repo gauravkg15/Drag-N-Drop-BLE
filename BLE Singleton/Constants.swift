@@ -9,5 +9,6 @@
 import Foundation
 
 
-let BLE_NOTIFICATION = Notification.Name(rawValue: "BLE_Notification")
+let BLE_STATE_NOTIFICATION = Notification.Name(rawValue: "BLE_State_Notification")
+let BLE_DATA_NOTIFICATION = Notification.Name(rawValue: "BLE_Data_Notification")
 

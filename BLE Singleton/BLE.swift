@@ -74,7 +74,7 @@ extension BLE: CBCentralManagerDelegate {
     
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         centralManager.stopScan()
-         NotificationCenter.default.post(name: BLE_NOTIFICATION, object: self, userInfo: ["currentConnection" : "CONNECTING"])
+        postBLEConnectionStateNotification("CONNECTING")
         activeDevice = peripheral
         activeDevice?.delegate = self
         activeDevice?.discoverServices([myDevice.ServiceUUID!])
@@ -86,8 +86,8 @@ extension BLE: CBCentralManagerDelegate {
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         if peripheral == activeDevice {
-             NotificationCenter.default.post(name: BLE_NOTIFICATION, object: self, userInfo: ["currentConnection" : "DISCONNECTED"])
-            self.clearDevices()
+            postBLEConnectionStateNotification("DISCONNECTED")
+            clearDevices()
         }
     }
 }
@@ -115,8 +115,7 @@ extension BLE: CBPeripheralDelegate {
             return
         }
         guard let characteristics = service.characteristics else { return }
-        NotificationCenter.default.post(name: BLE_NOTIFICATION, object: nil)
-        NotificationCenter.default.post(name: BLE_NOTIFICATION, object: self, userInfo: ["currentConnection" : "CONNECTED"])
+        postBLEConnectionStateNotification("CONNECTED")
         for thisCharacteristic in characteristics {
             if (thisCharacteristic.uuid == myDevice.CharactersticUUID) {
                 activeCharacteristic = thisCharacteristic
@@ -136,8 +135,7 @@ extension BLE: CBPeripheralDelegate {
         guard let dataFromDevice = characteristic.value else { return }
         
         if characteristic.uuid == myDevice.CharactersticUUID {
-            // do something...
-            //post notification
+            postRecievedDataFromDeviceNotification()
             print(dataFromDevice)
         }
         
@@ -149,6 +147,9 @@ extension BLE: CBPeripheralDelegate {
 // MARK: - Helper methods
 
 extension BLE {
+    
+    // MARK: BLE Methods
+    
     func startCentralManager() {
         //let centralManagerQueue = DispatchQueue(label: "BLE queue", attributes: .concurrent)
         centralManager = CBCentralManager(delegate: self, queue: nil)
@@ -176,6 +177,8 @@ extension BLE {
         myDevice.CharactersticUUID = nil
     }
     
+    // MARK: UIActionSheet Methods
+    
     fileprivate func createDeviceSheet() {
         deviceSheet = UIAlertController(title: "Please choose a device.",
             message: "Connect to:", preferredStyle: .actionSheet)
@@ -187,4 +190,22 @@ extension BLE {
         deviceAlert = UIAlertController(title: "Error: failed to connect.",
             message: "Please try again.", preferredStyle: .alert)
     }
+    
+    // MARK: NSNotificationCenter Methods
+    
+    fileprivate func postBLEConnectionStateNotification(_ state: String) {
+        let connectionDetails = ["currentState" : state]
+        NotificationCenter.default.post(name: BLE_STATE_NOTIFICATION, object: self, userInfo: connectionDetails)
+    }
+    
+    fileprivate func postRecievedDataFromDeviceNotification() {
+        NotificationCenter.default.post(name: BLE_DATA_NOTIFICATION, object: self, userInfo: nil)
+    }
 }
+
+
+
+
+
+
+

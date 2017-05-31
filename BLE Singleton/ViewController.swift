@@ -11,21 +11,29 @@ import UIKit
 class ViewController: UIViewController {
     
     // MARK: - Private properties
+    
     var isBLEConnected = false
-    let myServiceUUID = "*** insert service UUID here ***"
-    let myCharacteristicUUID = "*** insert characteristic UUID here ***"
+    let myServiceUUID = "00001523-2c44-43e6-fbae-644db9ec1443"
+    let myCharacteristicUUID = "00001525-2c44-43e6-fbae-644db9ec1443"
     
     // MARK: - IBOutlets
     
     @IBOutlet weak var bluetoothButton: UIButton!
+    @IBOutlet weak var myLabel: UILabel!
     
     // MARK: - UIViewController methods
 
     override func viewDidLoad() {
         super.viewDidLoad()
         bluetoothButton.setImage(UIImage(named: "bluetoothRed"), for: UIControlState())
+        myLabel.text = "Disconnected."
         BLE.sharedInstance.startCentralManager()
-        NotificationCenter.default.addObserver(self, selector: #selector(updateBluetoothButton), name: BLE_NOTIFICATION, object: BLE.sharedInstance)
+        NotificationCenter.default.addObserver(self, selector: #selector(updateBluetoothButton), name: BLE_STATE_NOTIFICATION, object: BLE.sharedInstance)
+        NotificationCenter.default.addObserver(self, selector: #selector(recievedDataFromDevice), name: BLE_DATA_NOTIFICATION, object: BLE.sharedInstance)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 }
 
@@ -36,14 +44,12 @@ extension ViewController {
     @IBAction func bluetoothButtonTapped(_ sender: UIButton) {
         
         // DispatchQueue.main.async {
-        if self.isBLEConnected {
+        if isBLEConnected {
             BLE.sharedInstance.disconnect()
-            isBLEConnected = false
         }
         else {
             BLE.sharedInstance.startScanningForDevicesWith(serviceUUID: myServiceUUID, characteristicUUID: myCharacteristicUUID)
             self.present(BLE.sharedInstance.deviceSheet!, animated: true, completion: nil)
-            isBLEConnected = true
         }
         //  }
         
@@ -55,17 +61,26 @@ extension ViewController {
 extension ViewController {
     @objc fileprivate func updateBluetoothButton(notification: Notification) {
 
-        guard let connectionState = notification.userInfo!["currentConnection"] as! String! else {return}
+        guard let connectionState = notification.userInfo!["currentState"] as! String! else {return}
         
         switch connectionState {
         case "CONNECTED":
             bluetoothButton.setImage(UIImage(named: "bluetoothGreen"), for: UIControlState())
+            myLabel.text = "Connected! 😁"
+            isBLEConnected = true
         case "CONNECTING":
             bluetoothButton.setImage(UIImage(named: "bluetoothYellow"), for: UIControlState())
+            myLabel.text = "Connecting..."
         case "DISCONNECTED":
             bluetoothButton.setImage(UIImage(named: "bluetoothRed"), for: UIControlState())
+            isBLEConnected = false
+            myLabel.text = "Disconnected."
         default: ()
         }
+    }
+    
+    @objc fileprivate func recievedDataFromDevice(notification: Notification) {
+        myLabel.text = "Recieved data from device!"
     }
 }
 
