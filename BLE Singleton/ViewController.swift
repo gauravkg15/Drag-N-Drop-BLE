@@ -13,7 +13,7 @@ class ViewController: UIViewController {
     // MARK: - Private properties
     
     var isBLEConnected = false
-        
+    
     // MARK: - IBOutlets
     
     @IBOutlet weak var bluetoothButton: UIButton!
@@ -48,7 +48,7 @@ extension ViewController {
             BLE.sharedInstance.disconnect()
         }
         else {
-            BLE.sharedInstance.startScanningForDevicesWith(serviceUUID: myServiceUUID, characteristicUUID: myCharacteristicUUID)
+            BLE.sharedInstance.startScanningForDevicesWith(serviceUUID: constants.myServiceUUID, characteristicUUID: constants.myCharacteristicUUID)
             self.present(BLE.sharedInstance.deviceSheet!, animated: true, completion: nil)
         }
         //  }

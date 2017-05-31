@@ -8,6 +8,11 @@
 
 import Foundation
 
+struct constants {
+    static let myServiceUUID = "....."
+    static let myCharacteristicUUID = "....."
+}
+
 enum BLEState:String {
     case connected
     case disconnected
