@@ -13,6 +13,7 @@ import CoreBluetooth
 class BLE: NSObject {
     
     // MARK: - BLE shared instance 
+    
     static let sharedInstance = BLE()
     
     // MARK: - Properties
