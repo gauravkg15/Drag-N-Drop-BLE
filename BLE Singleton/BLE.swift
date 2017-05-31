@@ -44,7 +44,7 @@ extension BLE: CBCentralManagerDelegate {
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         switch central.state {
         case .poweredOn: break
-        case .poweredOff: break
+        case .poweredOff: self.clearDevices()
         case .resetting: self.disconnect()
         case .unauthorized: break
         case .unsupported: break
@@ -67,14 +67,14 @@ extension BLE: CBCentralManagerDelegate {
         let availableDevice = UIAlertAction(title: title , style: .default, handler: {
             action -> Void in
             self.centralManager.connect(peripheral,
-                options: [CBConnectPeripheralOptionNotifyOnDisconnectionKey : true])
+                options: [CBConnectPeripheralOptionNotifyOnNotificationKey : true])
         })
         deviceSheet!.addAction(availableDevice)
     }
     
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         centralManager.stopScan()
-        postBLEConnectionStateNotification("CONNECTING")
+        postBLEConnectionStateNotification(.connecting)
         activeDevice = peripheral
         activeDevice?.delegate = self
         activeDevice?.discoverServices([myDevice.ServiceUUID!])
@@ -86,7 +86,7 @@ extension BLE: CBCentralManagerDelegate {
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         if peripheral == activeDevice {
-            postBLEConnectionStateNotification("DISCONNECTED")
+            postBLEConnectionStateNotification(.disconnected)
             clearDevices()
         }
     }
@@ -115,7 +115,7 @@ extension BLE: CBPeripheralDelegate {
             return
         }
         guard let characteristics = service.characteristics else { return }
-        postBLEConnectionStateNotification("CONNECTED")
+        postBLEConnectionStateNotification(.connected)
         for thisCharacteristic in characteristics {
             if (thisCharacteristic.uuid == myDevice.CharactersticUUID) {
                 activeCharacteristic = thisCharacteristic
@@ -193,13 +193,13 @@ extension BLE {
     
     // MARK: NSNotificationCenter Methods
     
-    fileprivate func postBLEConnectionStateNotification(_ state: String) {
+    fileprivate func postBLEConnectionStateNotification(_ state: BLEState) {
         let connectionDetails = ["currentState" : state]
-        NotificationCenter.default.post(name: BLE_STATE_NOTIFICATION, object: self, userInfo: connectionDetails)
+        NotificationCenter.default.post(name: .BLE_State_Notification, object: self, userInfo: connectionDetails)
     }
     
     fileprivate func postRecievedDataFromDeviceNotification() {
-        NotificationCenter.default.post(name: BLE_DATA_NOTIFICATION, object: self, userInfo: nil)
+        NotificationCenter.default.post(name: .BLE_Data_Notification, object: self, userInfo: nil)
     }
 }
 

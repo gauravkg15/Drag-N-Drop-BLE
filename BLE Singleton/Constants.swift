@@ -8,7 +8,8 @@
 
 import Foundation
 
-
-let BLE_STATE_NOTIFICATION = Notification.Name(rawValue: "BLE_State_Notification")
-let BLE_DATA_NOTIFICATION = Notification.Name(rawValue: "BLE_Data_Notification")
-
+enum BLEState:String {
+    case connected
+    case disconnected
+    case connecting
+}

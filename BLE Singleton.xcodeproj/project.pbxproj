@@ -16,6 +16,7 @@
 		B853DF851EDB904800F6FDB8 /* BLE_SingletonUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B853DF841EDB904800F6FDB8 /* BLE_SingletonUITests.swift */; };
 		B853DF931EDB906100F6FDB8 /* BLE.swift in Sources */ = {isa = PBXBuildFile; fileRef = B853DF921EDB906100F6FDB8 /* BLE.swift */; };
 		B88F793F1EDE1EFC00653256 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B88F793E1EDE1EFC00653256 /* Constants.swift */; };
+		B88F79411EDF428800653256 /* customNSNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = B88F79401EDF428800653256 /* customNSNotifications.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +52,7 @@
 		B853DF861EDB904800F6FDB8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B853DF921EDB906100F6FDB8 /* BLE.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BLE.swift; sourceTree = "<group>"; };
 		B88F793E1EDE1EFC00653256 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		B88F79401EDF428800653256 /* customNSNotifications.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = customNSNotifications.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,7 +84,6 @@
 			isa = PBXGroup;
 			children = (
 				B853DF631EDB904800F6FDB8 /* BLE Singleton */,
-				B853DF781EDB904800F6FDB8 /* BLE SingletonTests */,
 				B853DF831EDB904800F6FDB8 /* BLE SingletonUITests */,
 				B853DF621EDB904800F6FDB8 /* Products */,
 			);
@@ -109,6 +110,8 @@
 				B853DF701EDB904800F6FDB8 /* Info.plist */,
 				B853DF921EDB906100F6FDB8 /* BLE.swift */,
 				B88F793E1EDE1EFC00653256 /* Constants.swift */,
+				B88F79401EDF428800653256 /* customNSNotifications.swift */,
+				B853DF781EDB904800F6FDB8 /* BLE SingletonTests */,
 			);
 			path = "BLE Singleton";
 			sourceTree = "<group>";
@@ -120,7 +123,7 @@
 				B853DF7B1EDB904800F6FDB8 /* Info.plist */,
 			);
 			path = "BLE SingletonTests";
-			sourceTree = "<group>";
+			sourceTree = SOURCE_ROOT;
 		};
 		B853DF831EDB904800F6FDB8 /* BLE SingletonUITests */ = {
 			isa = PBXGroup;
@@ -270,6 +273,7 @@
 			files = (
 				B853DF671EDB904800F6FDB8 /* ViewController.swift in Sources */,
 				B853DF931EDB906100F6FDB8 /* BLE.swift in Sources */,
+				B88F79411EDF428800653256 /* customNSNotifications.swift in Sources */,
 				B853DF651EDB904800F6FDB8 /* AppDelegate.swift in Sources */,
 				B88F793F1EDE1EFC00653256 /* Constants.swift in Sources */,
 			);

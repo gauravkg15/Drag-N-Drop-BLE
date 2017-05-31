@@ -13,9 +13,7 @@ class ViewController: UIViewController {
     // MARK: - Private properties
     
     var isBLEConnected = false
-    let myServiceUUID = "..."
-    let myCharacteristicUUID = "..."
-    
+        
     // MARK: - IBOutlets
     
     @IBOutlet weak var bluetoothButton: UIButton!
@@ -28,8 +26,10 @@ class ViewController: UIViewController {
         bluetoothButton.setImage(UIImage(named: "bluetoothRed"), for: UIControlState())
         myLabel.text = "Disconnected."
         BLE.sharedInstance.startCentralManager()
-        NotificationCenter.default.addObserver(self, selector: #selector(updateBluetoothButton), name: BLE_STATE_NOTIFICATION, object: BLE.sharedInstance)
-        NotificationCenter.default.addObserver(self, selector: #selector(recievedDataFromDevice), name: BLE_DATA_NOTIFICATION, object: BLE.sharedInstance)
+        NotificationCenter.default.addObserver(self, selector: #selector(updateBluetoothButton),
+            name: .BLE_State_Notification, object: BLE.sharedInstance)
+        NotificationCenter.default.addObserver(self, selector: #selector(updateUILabel),
+            name: .BLE_Data_Notification, object: BLE.sharedInstance)
     }
     
     deinit {
@@ -61,25 +61,24 @@ extension ViewController {
 extension ViewController {
     @objc fileprivate func updateBluetoothButton(notification: Notification) {
 
-        guard let connectionState = notification.userInfo!["currentState"] as! String! else {return}
+        guard let currentState = notification.userInfo!["currentState"] as! BLEState! else {return}
         
-        switch connectionState {
-        case "CONNECTED":
+        switch currentState {
+        case .connected:
             bluetoothButton.setImage(UIImage(named: "bluetoothGreen"), for: UIControlState())
             myLabel.text = "Connected! 😁"
             isBLEConnected = true
-        case "CONNECTING":
+        case .connecting:
             bluetoothButton.setImage(UIImage(named: "bluetoothYellow"), for: UIControlState())
             myLabel.text = "Connecting..."
-        case "DISCONNECTED":
+        case .disconnected:
             bluetoothButton.setImage(UIImage(named: "bluetoothRed"), for: UIControlState())
             isBLEConnected = false
             myLabel.text = "Disconnected."
-        default: ()
         }
     }
     
-    @objc fileprivate func recievedDataFromDevice(notification: Notification) {
+    @objc fileprivate func updateUILabel(notification: Notification) {
         myLabel.text = "Recieved data from device!"
     }
 }
