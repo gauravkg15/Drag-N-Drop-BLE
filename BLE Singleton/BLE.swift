@@ -69,7 +69,7 @@ extension BLE: CBCentralManagerDelegate {
             self.centralManager.connect(peripheral,
                 options: [CBConnectPeripheralOptionNotifyOnNotificationKey : true])
         })
-        deviceSheet!.addAction(availableDevice)
+        DispatchQueue.main.async(execute: {self.deviceSheet!.addAction(availableDevice)})
     }
     
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
@@ -151,8 +151,8 @@ extension BLE {
     // MARK: BLE Methods
     
     func startCentralManager() {
-        //let centralManagerQueue = DispatchQueue(label: "BLE queue", attributes: .concurrent)
-        centralManager = CBCentralManager(delegate: self, queue: nil)
+        let centralManagerQueue = DispatchQueue(label: "BLE queue", attributes: .concurrent)
+        centralManager = CBCentralManager(delegate: self, queue: centralManagerQueue)
     }
     
     func resetCentralManger() {

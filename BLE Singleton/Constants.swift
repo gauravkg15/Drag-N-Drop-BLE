@@ -9,8 +9,8 @@
 import Foundation
 
 struct constants {
-    static let myServiceUUID = "....."
-    static let myCharacteristicUUID = "....."
+    static let myServiceUUID = "..."
+    static let myCharacteristicUUID = "..."
 }
 
 enum BLEState:String {

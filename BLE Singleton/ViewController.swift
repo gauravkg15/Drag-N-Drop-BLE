@@ -43,16 +43,13 @@ extension ViewController {
     
     @IBAction func bluetoothButtonTapped(_ sender: UIButton) {
         
-        // DispatchQueue.main.async {
-        if isBLEConnected {
+        if self.isBLEConnected {
             BLE.sharedInstance.disconnect()
         }
         else {
             BLE.sharedInstance.startScanningForDevicesWith(serviceUUID: constants.myServiceUUID, characteristicUUID: constants.myCharacteristicUUID)
             self.present(BLE.sharedInstance.deviceSheet!, animated: true, completion: nil)
         }
-        //  }
-        
     }
 }
 
@@ -60,22 +57,24 @@ extension ViewController {
 
 extension ViewController {
     @objc fileprivate func updateBluetoothButton(notification: Notification) {
-
+        DispatchQueue.main.async(execute: {
         guard let currentState = notification.userInfo!["currentState"] as! BLEState! else {return}
         
         switch currentState {
         case .connected:
-            bluetoothButton.setImage(UIImage(named: "bluetoothGreen"), for: UIControlState())
-            myLabel.text = "Connected! 😁"
-            isBLEConnected = true
+            self.bluetoothButton.setImage(UIImage(named: "bluetoothGreen"), for: UIControlState())
+            self.myLabel.text = "Connected! 😁"
+            self.isBLEConnected = true
         case .connecting:
-            bluetoothButton.setImage(UIImage(named: "bluetoothYellow"), for: UIControlState())
-            myLabel.text = "Connecting..."
+            self.bluetoothButton.setImage(UIImage(named: "bluetoothYellow"), for: UIControlState())
+            self.myLabel.text = "Connecting..."
         case .disconnected:
-            bluetoothButton.setImage(UIImage(named: "bluetoothRed"), for: UIControlState())
-            isBLEConnected = false
-            myLabel.text = "Disconnected."
+            self.bluetoothButton.setImage(UIImage(named: "bluetoothRed"), for: UIControlState())
+            self.isBLEConnected = false
+            self.myLabel.text = "Disconnected."
         }
+        })
+        
     }
     
     @objc fileprivate func updateUILabel(notification: Notification) {
