@@ -13,8 +13,8 @@ class ViewController: UIViewController {
     // MARK: - Private properties
     
     var isBLEConnected = false
-    let myServiceUUID = "00001523-2c44-43e6-fbae-644db9ec1443"
-    let myCharacteristicUUID = "00001525-2c44-43e6-fbae-644db9ec1443"
+    let myServiceUUID = "..."
+    let myCharacteristicUUID = "..."
     
     // MARK: - IBOutlets
     
