@@ -17,6 +17,7 @@
 		B853DF931EDB906100F6FDB8 /* BLE.swift in Sources */ = {isa = PBXBuildFile; fileRef = B853DF921EDB906100F6FDB8 /* BLE.swift */; };
 		B88F793F1EDE1EFC00653256 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B88F793E1EDE1EFC00653256 /* Constants.swift */; };
 		B88F79411EDF428800653256 /* customNSNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = B88F79401EDF428800653256 /* customNSNotifications.swift */; };
+		B8E64CC51EEA5FA30007D2B8 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B8E64CC41EEA5FA30007D2B8 /* Localizable.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +54,7 @@
 		B853DF921EDB906100F6FDB8 /* BLE.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BLE.swift; sourceTree = "<group>"; };
 		B88F793E1EDE1EFC00653256 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		B88F79401EDF428800653256 /* customNSNotifications.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = customNSNotifications.swift; sourceTree = "<group>"; };
+		B8E64CC41EEA5FA30007D2B8 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,6 +108,7 @@
 				B853DF661EDB904800F6FDB8 /* ViewController.swift */,
 				B853DF681EDB904800F6FDB8 /* Main.storyboard */,
 				B853DF6B1EDB904800F6FDB8 /* Assets.xcassets */,
+				B8E64CC41EEA5FA30007D2B8 /* Localizable.strings */,
 				B853DF6D1EDB904800F6FDB8 /* LaunchScreen.storyboard */,
 				B853DF701EDB904800F6FDB8 /* Info.plist */,
 				B853DF921EDB906100F6FDB8 /* BLE.swift */,
@@ -202,7 +205,7 @@
 				TargetAttributes = {
 					B853DF601EDB904800F6FDB8 = {
 						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = ZR3S6B8984;
+						DevelopmentTeam = E6L956DP33;
 						ProvisioningStyle = Automatic;
 					};
 					B853DF741EDB904800F6FDB8 = {
@@ -245,6 +248,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B853DF6F1EDB904800F6FDB8 /* LaunchScreen.storyboard in Resources */,
+				B8E64CC51EEA5FA30007D2B8 /* Localizable.strings in Resources */,
 				B853DF6C1EDB904800F6FDB8 /* Assets.xcassets in Resources */,
 				B853DF6A1EDB904800F6FDB8 /* Main.storyboard in Resources */,
 			);
@@ -425,7 +429,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = ZR3S6B8984;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = E6L956DP33;
 				INFOPLIST_FILE = "BLE Singleton/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.gauravgupta.BLE-Singleton";
@@ -438,7 +443,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = ZR3S6B8984;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = E6L956DP33;
 				INFOPLIST_FILE = "BLE Singleton/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.gauravgupta.BLE-Singleton";

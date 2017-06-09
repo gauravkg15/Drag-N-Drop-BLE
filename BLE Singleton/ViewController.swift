@@ -24,7 +24,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         bluetoothButton.setImage(UIImage(named: "bluetoothRed"), for: UIControlState())
-        myLabel.text = "Disconnected."
+        myLabel.text = NSLocalizedString("ble_disconnected", comment: "disconnected")
         BLE.sharedInstance.startCentralManager()
         NotificationCenter.default.addObserver(self, selector: #selector(updateBluetoothButton),
             name: .BLE_State_Notification, object: BLE.sharedInstance)
@@ -57,22 +57,21 @@ extension ViewController {
 
 extension ViewController {
     @objc fileprivate func updateBluetoothButton(notification: Notification) {
-        DispatchQueue.main.async(execute: {
         guard let currentState = notification.userInfo!["currentState"] as! BLEState! else {return}
-        
-        switch currentState {
-        case .connected:
-            self.bluetoothButton.setImage(UIImage(named: "bluetoothGreen"), for: UIControlState())
-            self.myLabel.text = "Connected! 😁"
-            self.isBLEConnected = true
-        case .connecting:
-            self.bluetoothButton.setImage(UIImage(named: "bluetoothYellow"), for: UIControlState())
-            self.myLabel.text = "Connecting..."
-        case .disconnected:
-            self.bluetoothButton.setImage(UIImage(named: "bluetoothRed"), for: UIControlState())
-            self.isBLEConnected = false
-            self.myLabel.text = "Disconnected."
-        }
+        DispatchQueue.main.async(execute: {
+            switch currentState {
+            case .connected:
+                self.bluetoothButton.setImage(UIImage(named: "bluetoothGreen"), for: UIControlState())
+                self.myLabel.text = NSLocalizedString("ble_connected", comment: "connected")
+                self.isBLEConnected = true
+            case .connecting:
+                self.bluetoothButton.setImage(UIImage(named: "bluetoothYellow"), for: UIControlState())
+                self.myLabel.text = NSLocalizedString("ble_connecting", comment: "connecting")
+            case .disconnected:
+                self.bluetoothButton.setImage(UIImage(named: "bluetoothRed"), for: UIControlState())
+                self.isBLEConnected = false
+                self.myLabel.text = NSLocalizedString("ble_disconnected", comment: "disconnected")
+            }
         })
         
     }

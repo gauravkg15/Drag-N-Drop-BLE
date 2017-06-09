@@ -1,0 +1,11 @@
+/* 
+  Localizable.strings
+  BLE Singleton
+
+  Created by Gaurav Gupta on 6/8/17.
+  Copyright © 2017 GauravGupta. All rights reserved.
+*/
+
+"ble_disconnected" = "Disconnected.";
+"ble_connecting" = "Connecting...";
+"ble_connected" = "Connected! 😁";
